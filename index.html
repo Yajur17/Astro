@@ -37,7 +37,7 @@
       try {
         document.getElementById('status-message').textContent = "Generating your Kundli...";
         
-        const response = await fetch('/submit', {
+        const response = await fetch('https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws/', {
           method: 'POST',
           body: formData
         });
@@ -84,7 +84,7 @@
         input.value = '';
         
         try {
-          const response = await fetch('/chat', {
+          const response = await fetch('https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
