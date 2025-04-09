@@ -33,46 +33,46 @@
     const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws/';
 
     document.getElementById('kundliForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      
-      try {
-        const statusElement = document.getElementById('status-message');
-        statusElement.textContent = "Generating your Kundli...";
-        statusElement.style.color = 'blue';
+  e.preventDefault();
+  const formData = new FormData(this);
+  
+  try {
+    const statusElement = document.getElementById('status-message');
+    statusElement.textContent = "Generating your Kundli...";
+    statusElement.style.color = 'blue';
 
-        const response = await fetch(LAMBDA_URL, {
-          method: 'POST',
-          body: formData
-        });
-
-        // Handle non-JSON responses
-        const contentType = response.headers.get('content-type');
-        if (!contentType?.includes('application/json')) {
-          const text = await response.text();
-          throw new Error(`Unexpected response: ${text.slice(0, 100)}`);
-        }
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to generate Kundli");
-        }
-
-        if (data.success) {
-          document.getElementById('kundli-form').style.display = 'none';
-          document.getElementById('chat-container').style.display = 'block';
-          statusElement.textContent = "";
-          addMessage(data.message, 'assistant');
-        }
-      } catch (error) {
-        const statusElement = document.getElementById('status-message');
-        statusElement.textContent = error.message;
-        statusElement.style.color = 'red';
-        console.error('Submission Error:', error);
-      }
+    const response = await fetch('YOUR_LAMBDA_URL', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(formData).toString()
     });
 
+    // Handle non-JSON responses
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Server error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    document.getElementById('kundli-form').style.display = 'none';
+    document.getElementById('chat-container').style.display = 'block';
+    statusElement.textContent = "";
+    addMessage(data.message, 'assistant');
+
+  } catch (error) {
+    const statusElement = document.getElementById('status-message');
+    statusElement.innerHTML = `Error: ${error.message}`;
+    statusElement.style.color = 'red';
+    console.error('Submission Error:', error);
+  }
+});
     // Chat functionality
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('user-input').addEventListener('keypress', (e) => {
