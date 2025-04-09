@@ -30,7 +30,7 @@ const openai = new OpenAI({
 const upload = multer();
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname,'index.html'));
 });
 
 // Use multer.none() to parse multipart/form-data without file uploads
