@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kundli Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Kundli Chat</h1>
+  
+  <div id="kundli-form">
+    <form id="kundliForm">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="text" name="birthdate" placeholder="Birthdate (DD-MM-YYYY)" required>
+      <input type="text" name="birthtime" placeholder="Birth Time (HH:MM)" required>
+      <input type="text" name="City" placeholder="Birth City" required>
+      <button type="submit">Generate Kundli</button>
+    </form>
+  </div>
+
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <div id="chat-input">
+      <input type="text" id="user-input" placeholder="Ask about your Kundli...">
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <div id="status-message"></div>
+
+  <script>
+    document.getElementById('kundliForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      try {
+        document.getElementById('status-message').textContent = "Generating your Kundli...";
+        
+        const response = await fetch('/submit', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('kundli-form').style.display = 'none';
+          document.getElementById('chat-container').style.display = 'block';
+          document.getElementById('status-message').textContent = "";
+          
+          // Add welcome message to chat
+          addMessage(data.message, 'assistant');
+        } else {
+          throw new Error(data.error || "Failed to generate Kundli");
+        }
+      } catch (error) {
+        document.getElementById('status-message').textContent = error.message;
+        console.error(error);
+      }
+    });
+
+    // Chat functionality
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('user-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function addMessage(text, sender) {
+      const messagesDiv = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      messageDiv.textContent = text;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      
+      if (message) {
+        addMessage(message, 'user');
+        input.value = '';
+        
+        try {
+          const response = await fetch('/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+          });
+          
+          const data = await response.json();
+          addMessage(data.reply, 'assistant');
+        } catch (error) {
+          addMessage("Sorry, there was an error processing your message.", 'assistant');
+          console.error(error);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
