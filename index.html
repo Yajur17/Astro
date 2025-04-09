@@ -30,49 +30,53 @@
   <div id="status-message"></div>
 
   <script>
-    const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws/';
+    const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws';
+    let sessionId = null;
 
     document.getElementById('kundliForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const formData = new FormData(this);
-  
-  try {
-    const statusElement = document.getElementById('status-message');
-    statusElement.textContent = "Generating your Kundli...";
-    statusElement.style.color = 'blue';
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      try {
+        const statusElement = document.getElementById('status-message');
+        statusElement.textContent = "Generating your Kundli...";
+        statusElement.style.color = 'blue';
 
-    const response = await fetch('https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams(formData).toString()
+        const response = await fetch(`${LAMBDA_URL}/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(formData)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Store session ID
+        sessionId = data.sessionId;
+        
+        document.getElementById('kundli-form').style.display = 'none';
+        document.getElementById('chat-container').style.display = 'block';
+        statusElement.textContent = "";
+        addMessage(data.message, 'assistant');
+
+      } catch (error) {
+        const statusElement = document.getElementById('status-message');
+        statusElement.innerHTML = `Error: ${error.message}`;
+        statusElement.style.color = 'red';
+        console.error('Submission Error:', error);
+      }
     });
 
-    // Handle non-JSON responses
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Server error: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
-    document.getElementById('kundli-form').style.display = 'none';
-    document.getElementById('chat-container').style.display = 'block';
-    statusElement.textContent = "";
-    addMessage(data.message, 'assistant');
-
-  } catch (error) {
-    const statusElement = document.getElementById('status-message');
-    statusElement.innerHTML = `Error: ${error.message}`;
-    statusElement.style.color = 'red';
-    console.error('Submission Error:', error);
-  }
-});
     // Chat functionality
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('user-input').addEventListener('keypress', (e) => {
@@ -92,31 +96,32 @@
       const input = document.getElementById('user-input');
       const message = input.value.trim();
       
-      if (!message) return;
+      if (!message || !sessionId) return;
 
       try {
         addMessage(message, 'user');
         input.value = '';
         
-        const response = await fetch(LAMBDA_URL, {
+        const response = await fetch(`${LAMBDA_URL}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({
+            sessionId: sessionId,
+            message: message
+          })
         });
 
-        // Handle non-JSON responses
-        const contentType = response.headers.get('content-type');
-        if (!contentType?.includes('application/json')) {
-          const text = await response.text();
-          throw new Error(`Unexpected response: ${text.slice(0, 100)}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Chat error: ${errorText}`);
         }
 
         const data = await response.json();
         
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to get response");
+        if (data.error) {
+          throw new Error(data.error);
         }
 
         addMessage(data.reply, 'assistant');
