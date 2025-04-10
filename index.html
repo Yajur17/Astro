@@ -51,7 +51,8 @@
         statusElement.textContent = "Generating your Kundli...";
         statusElement.style.color = 'blue';
 
-        const response = await fetch(LAMBDA_URL, {
+        // Update endpoint to /submit
+        const response = await fetch(`${LAMBDA_URL}/submit`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -86,7 +87,41 @@
       }
     });
 
-    // Chat functionality
+    // Add topic button handlers
+    document.querySelectorAll('.topic-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const prompt = e.target.dataset.prompt;
+        if (!sessionId) return;
+        
+        try {
+          addMessage(prompt, 'user');
+          const response = await fetch(`${LAMBDA_URL}/chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              sessionId: sessionId,
+              message: prompt
+            })
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Chat error: ${errorText}`);
+          }
+
+          const data = await response.json();
+          addMessage(data.reply, 'assistant');
+          
+        } catch (error) {
+          addMessage("Sorry, there was an error processing your request.", 'assistant');
+          console.error('Topic Error:', error);
+        }
+      });
+    });
+
+    // Existing chat functionality
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('user-input').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
@@ -111,7 +146,7 @@
         addMessage(message, 'user');
         input.value = '';
         
-        const response = await fetch(LAMBDA_URL, {
+        const response = await fetch(`${LAMBDA_URL}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -139,6 +174,5 @@
         console.error('Chat Error:', error);
       }
     }
-  </script>
-</body>
+</script></body>
 </html>
