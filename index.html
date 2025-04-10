@@ -20,12 +20,21 @@
   </div>
 
   <div id="chat-container">
-    <div id="chat-messages"></div>
-    <div id="chat-input">
-      <input type="text" id="user-input" placeholder="Ask about your Kundli...">
-      <button id="send-btn">Send</button>
-    </div>
+  <div id="chat-messages"></div>
+  
+  <!-- Add quick action buttons -->
+  <div id="quick-actions">
+    <button class="topic-btn" data-prompt="Analyze my health prospects based on my Kundli">Health</button>
+    <button class="topic-btn" data-prompt="What does my Kundli say about wealth and finances?">Wealth</button>
+    <button class="topic-btn" data-prompt="Explain love and relationship aspects from my Kundli">Love</button>
+    <button class="topic-btn" data-prompt="Predict career and business opportunities from my Kundli">Job/Business</button>
   </div>
+  
+  <div id="chat-input">
+    <input type="text" id="user-input" placeholder="Ask about your Kundli...">
+    <button id="send-btn">Send</button>
+  </div>
+</div>
 
   <div id="status-message"></div>
 
