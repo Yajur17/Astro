@@ -139,70 +139,69 @@
     </aside>
   </div>
 
- <script>
-  const astroSymbols = [
-    { symbol: '♈', name: 'Aries' },
-    { symbol: '♉', name: 'Taurus' },
-    { symbol: '♊', name: 'Gemini' },
-    { symbol: '♋', name: 'Cancer' },
-    { symbol: '♌', name: 'Leo' },
-    { symbol: '♍', name: 'Virgo' },
-    { symbol: '♎', name: 'Libra' },
-    { symbol: '♏', name: 'Scorpio' },
-    { symbol: '♐', name: 'Sagittarius' },
-    { symbol: '♑', name: 'Capricorn' },
-    { symbol: '♒', name: 'Aquarius' },
-    { symbol: '♓', name: 'Pisces' }
-  ];
+<script>
+  window.onload = function() {
+    const astroSymbols = [
+      { symbol: '♈', name: 'Aries' },
+      { symbol: '♉', name: 'Taurus' },
+      { symbol: '♊', name: 'Gemini' },
+      { symbol: '♋', name: 'Cancer' },
+      { symbol: '♌', name: 'Leo' },
+      { symbol: '♍', name: 'Virgo' },
+      { symbol: '♎', name: 'Libra' },
+      { symbol: '♏', name: 'Scorpio' },
+      { symbol: '♐', name: 'Sagittarius' },
+      { symbol: '♑', name: 'Capricorn' },
+      { symbol: '♒', name: 'Aquarius' },
+      { symbol: '♓', name: 'Pisces' }
+    ];
 
-  const rightPanel = document.querySelector('.right-panel');
-  const numSigns = 24;  // Reduced a bit for clarity
+    const rightPanel = document.querySelector('.right-panel');
+    const numSigns = 24;  // Balanced quantity
 
-  // Store positions to avoid overlap
-  const placedSigns = [];
-  const minDistance = 45;  // Minimum px distance between signs
+    const placedSigns = [];
+    const minDistance = 50;  // px distance between signs
 
-  // Generate non-overlapping position
-  function getNonOverlappingPosition(maxX, maxY) {
-    let tries = 0;
-    while (tries < 1000) {
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-      let overlap = false;
+    function getNonOverlappingPosition(maxX, maxY) {
+      let tries = 0;
+      while (tries < 200) {
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        let overlap = false;
 
-      for (const pos of placedSigns) {
-        const dx = pos.x - x;
-        const dy = pos.y - y;
-        if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
-          overlap = true;
-          break;
+        for (const pos of placedSigns) {
+          const dx = pos.x - x;
+          const dy = pos.y - y;
+          if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
+            overlap = true;
+            break;
+          }
         }
-      }
 
-      if (!overlap) {
-        placedSigns.push({ x, y });
-        return { x, y };
-      }
+        if (!overlap) {
+          placedSigns.push({ x, y });
+          return { x, y };
+        }
 
-      tries++;
+        tries++;
+      }
+      return { x: Math.random() * maxX, y: Math.random() * maxY };  // fallback
     }
-    return null; // fallback (should rarely happen)
-  }
 
-  // Create and position symbols
-  const panelRect = rightPanel.getBoundingClientRect();
-  const maxX = panelRect.width - minDistance;
-  const maxY = panelRect.height - minDistance;
+    const panelRect = rightPanel.getBoundingClientRect();
+    const maxX = panelRect.width - minDistance;
+    const maxY = panelRect.height - minDistance;
 
-  for (let i = 0; i < numSigns; i++) {
-    const signData = astroSymbols[i % astroSymbols.length];
-    const span = document.createElement('span');
-    span.classList.add('astro-sign');
-    span.textContent = signData.symbol;
-    span.title = signData.name;
+    for (let i = 0; i < numSigns; i++) {
+      const signData = astroSymbols[i % astroSymbols.length];
+      const span = document.createElement('span');
+      span.classList.add('astro-sign');
+      span.textContent = signData.symbol;
+      span.title = signData.name;
 
-    const position = getNonOverlappingPosition(maxX, maxY);
-    if (position) {
+      const position = getNonOverlappingPosition(maxX, maxY);
+
+      span.style.position = 'absolute';
       span.style.left = `${position.x}px`;
       span.style.top = `${position.y}px`;
 
@@ -214,12 +213,12 @@
 
       rightPanel.appendChild(span);
     }
-  }
 
-  // Button navigation
-  document.getElementById('getStartedBtn').addEventListener('click', function () {
-    location.href = 'index.html';
-  });
+    // Button navigation
+    document.getElementById('getStartedBtn').addEventListener('click', function () {
+      location.href = 'index.html';
+    });
+  };
 </script>
 </body>
 </html>
