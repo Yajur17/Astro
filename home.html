@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Birth Chart Analysis</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
+
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .left-panel {
+    width: 70%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .left-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('home_cat.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: 0;
+  }
+
+  .left-panel > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .left-panel h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .left-panel p {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #e0d7f7cc;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .right-panel {
+    width: 30%;
+    background: #fff;
+    position: relative; /* Needed for absolute positioning of symbols */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    overflow: hidden;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 260px;
+    position: relative;
+    z-index: 10;
+  }
+
+  button {
+    background: #764ba2;
+    border: none;
+    color: #fff;
+    padding: 15px 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+  }
+
+  button:hover, button:focus {
+    background-color: #5b377a;
+    outline: none;
+    transform: scale(1.05);
+  }
+
+  .astro-sign {
+    position: absolute;
+    font-size: 2.5rem;
+    color: #764ba2;
+    opacity: 0.15;
+    user-select: none;
+    pointer-events: none;
+    font-family: Arial, sans-serif;
+    z-index: 1;
+    transform-origin: center;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <section class="left-panel" aria-label="Site Introduction">
+      <h1>Birth Chart Analysis</h1>
+      <p>Discover the cosmic blueprint tailored for you</p>
+    </section>
+    <aside class="right-panel" aria-label="Navigation Buttons and Symbols">
+      <div class="buttons">
+        <button id="getStartedBtn" aria-label="Let's Get Started with Birth Chart Analysis" onclick="window.location.href='index.html'">Let's Get Started</button>
+        <button id="learnMoreBtn" aria-label="Learn More about Birth Chart Analysis">Learn More</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const astroSymbols = [
+      { symbol: '♈', name: 'Aries' },
+      { symbol: '♉', name: 'Taurus' },
+      { symbol: '♊', name: 'Gemini' },
+      { symbol: '♋', name: 'Cancer' },
+      { symbol: '♌', name: 'Leo' },
+      { symbol: '♍', name: 'Virgo' },
+      { symbol: '♎', name: 'Libra' },
+      { symbol: '♏', name: 'Scorpio' },
+      { symbol: '♐', name: 'Sagittarius' },
+      { symbol: '♑', name: 'Capricorn' },
+      { symbol: '♒', name: 'Aquarius' },
+      { symbol: '♓', name: 'Pisces' }
+    ];
+
+    const rightPanel = document.querySelector('.right-panel');
+    const numSigns = 24;
+
+    // Create and position symbols
+    for (let i = 0; i < numSigns; i++) {
+      const signData = astroSymbols[i % astroSymbols.length];
+      const span = document.createElement('span');
+      span.classList.add('astro-sign');
+      span.textContent = signData.symbol;
+      span.title = signData.name;
+
+      // Get panel dimensions
+      const panelRect = rightPanel.getBoundingClientRect();
+      const maxX = panelRect.width - 50;
+      const maxY = panelRect.height - 50;
+
+      // Random position within right panel
+      span.style.left = `${Math.random() * maxX}px`;
+      span.style.top = `${Math.random() * maxY}px`;
+
+      // Random rotation and scale
+      span.style.transform = `
+        rotate(${Math.random() * 360}deg)
+        scale(${0.7 + Math.random() * 0.5})
+      `;
+
+      // Random opacity variation
+      span.style.opacity = 0.1 + (Math.random() * 0.15);
+
+      rightPanel.appendChild(span);
+    }
+  </script>
+</body>
+</html>
