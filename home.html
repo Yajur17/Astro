@@ -139,57 +139,87 @@
     </aside>
   </div>
 
-  <script>
-    const astroSymbols = [
-      { symbol: '♈', name: 'Aries' },
-      { symbol: '♉', name: 'Taurus' },
-      { symbol: '♊', name: 'Gemini' },
-      { symbol: '♋', name: 'Cancer' },
-      { symbol: '♌', name: 'Leo' },
-      { symbol: '♍', name: 'Virgo' },
-      { symbol: '♎', name: 'Libra' },
-      { symbol: '♏', name: 'Scorpio' },
-      { symbol: '♐', name: 'Sagittarius' },
-      { symbol: '♑', name: 'Capricorn' },
-      { symbol: '♒', name: 'Aquarius' },
-      { symbol: '♓', name: 'Pisces' }
-    ];
+ <script>
+  const astroSymbols = [
+    { symbol: '♈', name: 'Aries' },
+    { symbol: '♉', name: 'Taurus' },
+    { symbol: '♊', name: 'Gemini' },
+    { symbol: '♋', name: 'Cancer' },
+    { symbol: '♌', name: 'Leo' },
+    { symbol: '♍', name: 'Virgo' },
+    { symbol: '♎', name: 'Libra' },
+    { symbol: '♏', name: 'Scorpio' },
+    { symbol: '♐', name: 'Sagittarius' },
+    { symbol: '♑', name: 'Capricorn' },
+    { symbol: '♒', name: 'Aquarius' },
+    { symbol: '♓', name: 'Pisces' }
+  ];
 
-    const rightPanel = document.querySelector('.right-panel');
-    const numSigns = 48;
+  const rightPanel = document.querySelector('.right-panel');
+  const numSigns = 24;  // Reduced a bit for clarity
 
-    // Create and position symbols
-    for (let i = 0; i < numSigns; i++) {
-      const signData = astroSymbols[i % astroSymbols.length];
-      const span = document.createElement('span');
-      span.classList.add('astro-sign');
-      span.textContent = signData.symbol;
-      span.title = signData.name;
+  // Store positions to avoid overlap
+  const placedSigns = [];
+  const minDistance = 45;  // Minimum px distance between signs
 
-      // Get panel dimensions
-      const panelRect = rightPanel.getBoundingClientRect();
-      const maxX = panelRect.width - 50;
-      const maxY = panelRect.height - 50;
+  // Generate non-overlapping position
+  function getNonOverlappingPosition(maxX, maxY) {
+    let tries = 0;
+    while (tries < 1000) {
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      let overlap = false;
 
-   document.getElementById('getStartedBtn').addEventListener('click', function () {
-    location.href = 'index.html';
-   });
+      for (const pos of placedSigns) {
+        const dx = pos.x - x;
+        const dy = pos.y - y;
+        if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
+          overlap = true;
+          break;
+        }
+      }
 
-      // Random position within right panel
-      span.style.left = `${Math.random() * maxX}px`;
-      span.style.top = `${Math.random() * maxY}px`;
+      if (!overlap) {
+        placedSigns.push({ x, y });
+        return { x, y };
+      }
 
-      // Random rotation and scale
+      tries++;
+    }
+    return null; // fallback (should rarely happen)
+  }
+
+  // Create and position symbols
+  const panelRect = rightPanel.getBoundingClientRect();
+  const maxX = panelRect.width - minDistance;
+  const maxY = panelRect.height - minDistance;
+
+  for (let i = 0; i < numSigns; i++) {
+    const signData = astroSymbols[i % astroSymbols.length];
+    const span = document.createElement('span');
+    span.classList.add('astro-sign');
+    span.textContent = signData.symbol;
+    span.title = signData.name;
+
+    const position = getNonOverlappingPosition(maxX, maxY);
+    if (position) {
+      span.style.left = `${position.x}px`;
+      span.style.top = `${position.y}px`;
+
       span.style.transform = `
         rotate(${Math.random() * 360}deg)
         scale(${0.7 + Math.random() * 0.5})
       `;
-
-      // Random opacity variation
       span.style.opacity = 0.1 + (Math.random() * 0.15);
 
       rightPanel.appendChild(span);
     }
-  </script>
+  }
+
+  // Button navigation
+  document.getElementById('getStartedBtn').addEventListener('click', function () {
+    location.href = 'index.html';
+  });
+</script>
 </body>
 </html>
