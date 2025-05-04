@@ -131,7 +131,7 @@
     </section>
     <aside class="right-panel" aria-label="Navigation Buttons and Symbols">
       <div class="buttons">
-        <button id="getStartedBtn" aria-label="Let's Get Started with Birth Chart Analysis" onclick="location.href='/form/'">Let's Get Started</button>
+        <button id="getStartedBtn" aria-label="Let's Get Started with Birth Chart Analysis">Let's Get Started</button>
         <button id="learnMoreBtn" aria-label="Learn More about Birth Chart Analysis">Learn More</button>
       </div>
     </aside>
@@ -168,6 +168,10 @@
       const panelRect = rightPanel.getBoundingClientRect();
       const maxX = panelRect.width - 50;
       const maxY = panelRect.height - 50;
+
+   document.getElementById('getStartedBtn').addEventListener('click', function () {
+    window.location.href = '/form/';
+   });
 
       // Random position within right panel
       span.style.left = `${Math.random() * maxX}px`;
