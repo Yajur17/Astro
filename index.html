@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kundli Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="./astro.png">
+</head>
+<body>
+  <h1>Kundli Chat</h1>
+  
+  <div id="kundli-form">
+    <form id="kundliForm">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="text" name="birthdate" placeholder="Birthdate (DD-MM-YYYY)" required>
+      <input type="text" name="birthtime" placeholder="Birth Time (HH:MM)" required>
+      <input type="text" name="City" placeholder="Birth City" required>
+      <button type="submit">Generate Kundli</button>
+    </form>
+  </div>
+
+  <div id="chat-container">
+  <div id="chat-messages"></div>
+  
+  <!-- Add quick action buttons -->
+  <div id="quick-actions">
+    <button class="topic-btn" data-prompt="Analyze my health prospects based on my Kundli">Health</button>
+    <button class="topic-btn" data-prompt="What does my Kundli say about wealth and finances?">Wealth</button>
+    <button class="topic-btn" data-prompt="Explain love and relationship aspects from my Kundli">Love</button>
+    <button class="topic-btn" data-prompt="Predict career and business opportunities from my Kundli">Job/Business</button>
+  </div>
+  
+  <div id="chat-input">
+    <input type="text" id="user-input" placeholder="Ask about your Kundli...">
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+
+  <div id="status-message"></div>
+
+  <script>
+    const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws';
+    let sessionId = null;
+
+    document.getElementById('kundliForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      try {
+        const statusElement = document.getElementById('status-message');
+        statusElement.textContent = "Generating your Kundli...";
+        statusElement.style.color = 'blue';
+
+        // Update endpoint to /submit
+        const response = await fetch(`${LAMBDA_URL}/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(formData)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Store session ID
+        sessionId = data.sessionId;
+        
+        document.getElementById('kundli-form').style.display = 'none';
+        document.getElementById('chat-container').style.display = 'block';
+        statusElement.textContent = "";
+        addMessage(data.message, 'assistant');
+
+      } catch (error) {
+        const statusElement = document.getElementById('status-message');
+        statusElement.innerHTML = `Error: ${error.message}`;
+        statusElement.style.color = 'red';
+        console.error('Submission Error:', error);
+      }
+    });
+
+    // Add topic button handlers
+    document.querySelectorAll('.topic-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const prompt = e.target.dataset.prompt;
+        if (!sessionId) return;
+        
+        try {
+          addMessage(prompt, 'user');
+          const response = await fetch(`${LAMBDA_URL}/chat`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              sessionId: sessionId,
+              message: prompt
+            })
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Chat error: ${errorText}`);
+          }
+
+          const data = await response.json();
+          addMessage(data.reply, 'assistant');
+          
+        } catch (error) {
+          addMessage("Sorry, there was an error processing your request.", 'assistant');
+          console.error('Topic Error:', error);
+        }
+      });
+    });
+
+    // Existing chat functionality
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('user-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function addMessage(text, sender) {
+      const messagesDiv = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+      messageDiv.textContent = text;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      
+      if (!message || !sessionId) return;
+
+      try {
+        addMessage(message, 'user');
+        input.value = '';
+        
+        const response = await fetch(`${LAMBDA_URL}/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            message: message
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Chat error: ${errorText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        addMessage(data.reply, 'assistant');
+      } catch (error) {
+        addMessage("Sorry, there was an error processing your message.", 'assistant');
+        console.error('Chat Error:', error);
+      }
+    }
+</script></body>
+</html>
