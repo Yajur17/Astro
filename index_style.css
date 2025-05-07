@@ -173,12 +173,14 @@ button:hover {
   padding: 24px 28px;
   width: 350px;
   margin-left: auto;
-  height: 500px;
-  max-height: 80vh;
+  height: 600px; /* Increased height */
+  max-height: 90vh; /* Increased max height */
 }
+
 .chatbox.active {
   display: flex;
 }
+
 .chatbox-header {
   font-weight: 700;
   font-size: 18px;
@@ -186,6 +188,7 @@ button:hover {
   color: #5048e5;
   text-align: center;
 }
+
 .chat-messages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -197,11 +200,13 @@ button:hover {
   margin-bottom: 12px;
   font-size: 14px;
 }
+
 .chat-input-area {
   display: flex;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-top: auto; /* Pushes the input area to the bottom */
 }
+
 .chat-input-area input[type="text"] {
   flex: 1;
   padding: 10px 14px;
@@ -210,6 +215,7 @@ button:hover {
   border: 1.7px solid #a9a9a9;
   outline-color: #6c63ff;
 }
+
 .chat-input-area button.send-btn {
   background: linear-gradient(45deg, #5048e5, #8262f6);
   border: none;
@@ -222,28 +228,33 @@ button:hover {
   box-shadow: 0 4px 12px rgba(102, 93, 193, 0.56);
   transition: background 0.3s ease;
 }
+
 .chat-input-area button.send-btn:hover {
   background: linear-gradient(45deg, #3b36b4, #604dca);
 }
+
 .chatbox-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px; /* Reduced gap */
   justify-content: center;
+  margin-bottom: 12px; /* Add margin to separate from input area */
 }
+
 .chatbox-buttons button {
-  flex: 1 1 45%;
-  padding: 12px 0;
+  flex: 1 1 40%; /* Adjusted to make buttons smaller */
+  padding: 8px 0; /* Reduced padding */
   background: linear-gradient(45deg, #667eea, #764ba2);
   border: none;
   border-radius: 12px;
   color: white;
-  font-size: 16px;
+  font-size: 14px; /* Reduced font size */
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(102, 93, 193, 0.6);
   transition: background 0.3s ease;
 }
+
 .chatbox-buttons button:hover {
   background: linear-gradient(45deg, #523f99, #5f3a9e);
 }
