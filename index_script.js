@@ -20,6 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
         else birthDateInput.focus();
     });
 
+ function addMessage(text, fromUser = true) {
+        const messagesDiv = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${fromUser ? 'user' : 'assistant'}-message`;
+        messageDiv.textContent = text;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         if (!this.checkValidity()) {
