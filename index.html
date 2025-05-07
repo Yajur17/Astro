@@ -14,26 +14,26 @@
     <form id="birthChartForm" novalidate>
       <label for="name"> Full Name</label>
       <input type="text" id="name" name="name" placeholder="John" required autocomplete="given-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid name." />
-      <label for="birthDate">Birth Date</label>
+      <label for="birthdate">Birth Date</label>
       <div class="date-input-wrapper">
-        <input type="date" id="birthDate" name="birthDate" required aria-describedby="birthDateHelp" />
+        <input type="date" id="birthdate" name="birthdate" required aria-describedby="birthDateHelp" />
         <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
           <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H5V9h14v9zM7 11h5v5H7z"/>
         </svg>
       </div>
       <div id="birthDateHelp">Format: MM/DD/YYYY</div>
 
-      <label for="birthTime">Birth Time</label>
+      <label for="birthtime">Birth Time</label>
       <div class="time-input-wrapper">
-        <input type="time" id="birthTime" name="birthTime" required placeholder="--:--" />
+        <input type="time" id="birthtime" name="birthtime" required placeholder="--:--" />
         <span>EST</span>
       </div>
 
       <label for="email">Email</label>
       <input type="email" id="email" name="email" placeholder="example@example.com" required autocomplete="email" />
 
-      <label for="placeOfBirth">Place of Birth</label>
-      <input type="text" id="placeOfBirth" name="placeOfBirth" placeholder="City, State/Province" required pattern="[A-Za-z\s,.'-]+" title="Please enter a valid place of birth." autocomplete="off" />
+      <label for="city">Place of Birth</label>
+      <input type="text" id="city" name="city" placeholder="City, State/Province" required pattern="[A-Za-z\s,.'-]+" title="Please enter a valid place of birth." autocomplete="off" />
 
       <button type="submit">Submit</button>
       <div id="status-message" aria-live="polite" style="margin-top:10px; font-weight:600;"></div>
