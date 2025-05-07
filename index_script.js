@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: new URLSearchParams(formData)
             });
-            console.log('Request Body:', body);
 
             if (!response.ok) {
                 const errorText = await response.text();
