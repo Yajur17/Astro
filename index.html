@@ -12,10 +12,8 @@
   <!-- Form container -->
   <main class="container" role="main" aria-label="Birth Chart Analysis Form" id="formContainer">
     <form id="birthChartForm" novalidate>
-      <label for="firstName">First Name</label>
-      <input type="text" id="firstName" name="firstName" placeholder="John" required autocomplete="given-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid first name." />
-      <label for="lastName">Last Name</label>
-      <input type="text" id="lastName" name="lastName" placeholder="Doe" required autocomplete="family-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid last name." />
+      <label for="name"> Full Name</label>
+      <input type="text" id="name" name="name" placeholder="John" required autocomplete="given-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid name." />
       <label for="birthDate">Birth Date</label>
       <div class="date-input-wrapper">
         <input type="date" id="birthDate" name="birthDate" required aria-describedby="birthDateHelp" />
@@ -57,6 +55,7 @@
     <div class="chat-input-area">
       <input type="text" id="chatInput" aria-label="Type your question here" placeholder="Type your question..." />
       <button class="send-btn" id="sendBtn" aria-label="Send message">Send</button>
+
     </div>
   </main>
 
