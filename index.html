@@ -1,179 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kundli Chat</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="./astro.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Birth Chart Analysis</title>
+<link rel="stylesheet" href="index_style.css" />
+<script src="index_script.js"></script>
 </head>
 <body>
-  <h1>Kundli Chat</h1>
   
-  <div id="kundli-form">
-    <form id="kundliForm">
-      <input type="text" name="name" placeholder="Full Name" required>
-      <input type="text" name="birthdate" placeholder="Birthdate (DD-MM-YYYY)" required>
-      <input type="text" name="birthtime" placeholder="Birth Time (HH:MM)" required>
-      <input type="text" name="City" placeholder="Birth City" required>
-      <button type="submit">Generate Kundli</button>
+  <!-- Form container -->
+  <main class="container" role="main" aria-label="Birth Chart Analysis Form" id="formContainer">
+    <form id="birthChartForm" novalidate>
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" name="firstName" placeholder="John" required autocomplete="given-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid first name." />
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" name="lastName" placeholder="Doe" required autocomplete="family-name" pattern="[A-Za-z\s'-]+" title="Please enter a valid last name." />
+      <label for="birthDate">Birth Date</label>
+      <div class="date-input-wrapper">
+        <input type="date" id="birthDate" name="birthDate" required aria-describedby="birthDateHelp" />
+        <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H5V9h14v9zM7 11h5v5H7z"/>
+        </svg>
+      </div>
+      <div id="birthDateHelp">Format: MM/DD/YYYY</div>
+
+      <label for="birthTime">Birth Time</label>
+      <div class="time-input-wrapper">
+        <input type="time" id="birthTime" name="birthTime" required placeholder="--:--" />
+        <span>EST</span>
+      </div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="example@example.com" required autocomplete="email" />
+
+      <label for="placeOfBirth">Place of Birth</label>
+      <input type="text" id="placeOfBirth" name="placeOfBirth" placeholder="City, State/Province" required pattern="[A-Za-z\s,.'-]+" title="Please enter a valid place of birth." autocomplete="off" />
+
+      <button type="submit">Submit</button>
     </form>
-  </div>
+  </main>
 
-  <div id="chat-container">
-  <div id="chat-messages"></div>
-  
-  <!-- Add quick action buttons -->
-  <div id="quick-actions">
-    <button class="topic-btn" data-prompt="Analyze my health prospects based on my Kundli">Health</button>
-    <button class="topic-btn" data-prompt="What does my Kundli say about wealth and finances?">Wealth</button>
-    <button class="topic-btn" data-prompt="Explain love and relationship aspects from my Kundli">Love</button>
-    <button class="topic-btn" data-prompt="Predict career and business opportunities from my Kundli">Job/Business</button>
-  </div>
-  
-  <div id="chat-input">
-    <input type="text" id="user-input" placeholder="Ask about your Kundli...">
-    <button id="send-btn">Send</button>
-  </div>
-</div>
+  <!-- Chatbox container -->
+  <main class="chatbox" role="region" aria-label="Chatbox" id="chatbox" tabindex="0" aria-live="polite" aria-atomic="true">
+    <div class="chatbox-header">Ask about your Birth Chart</div>
+    <div class="chat-messages" id="chatMessages" aria-live="polite" aria-atomic="false">
+      <!-- Chat messages will appear here -->
+    </div>
+    <div class="chatbox-buttons">
+      <button type="button" id="btnHealth">Health</button>
+      <button type="button" id="btnLove">Love</button>
+      <button type="button" id="btnCareer">Career</button>
+      <button type="button" id="btnWealth">Wealth</button>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" aria-label="Type your question here" placeholder="Type your question..." />
+      <button class="send-btn" id="sendBtn" aria-label="Send message">Send</button>
+    </div>
+  </main>
 
-  <div id="status-message"></div>
-
-  <script>
-    const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws';
-    let sessionId = null;
-
-    document.getElementById('kundliForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      
-      try {
-        const statusElement = document.getElementById('status-message');
-        statusElement.textContent = "Generating your Kundli...";
-        statusElement.style.color = 'blue';
-
-        // Update endpoint to /submit
-        const response = await fetch(`${LAMBDA_URL}/submit`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams(formData)
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Server error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        // Store session ID
-        sessionId = data.sessionId;
-        
-        document.getElementById('kundli-form').style.display = 'none';
-        document.getElementById('chat-container').style.display = 'block';
-        statusElement.textContent = "";
-        addMessage(data.message, 'assistant');
-
-      } catch (error) {
-        const statusElement = document.getElementById('status-message');
-        statusElement.innerHTML = `Error: ${error.message}`;
-        statusElement.style.color = 'red';
-        console.error('Submission Error:', error);
-      }
-    });
-
-    // Add topic button handlers
-    document.querySelectorAll('.topic-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const prompt = e.target.dataset.prompt;
-        if (!sessionId) return;
-        
-        try {
-          addMessage(prompt, 'user');
-          const response = await fetch(`${LAMBDA_URL}/chat`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              sessionId: sessionId,
-              message: prompt
-            })
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Chat error: ${errorText}`);
-          }
-
-          const data = await response.json();
-          addMessage(data.reply, 'assistant');
-          
-        } catch (error) {
-          addMessage("Sorry, there was an error processing your request.", 'assistant');
-          console.error('Topic Error:', error);
-        }
-      });
-    });
-
-    // Existing chat functionality
-    document.getElementById('send-btn').addEventListener('click', sendMessage);
-    document.getElementById('user-input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
-    function addMessage(text, sender) {
-      const messagesDiv = document.getElementById('chat-messages');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${sender}-message`;
-      messageDiv.textContent = text;
-      messagesDiv.appendChild(messageDiv);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('user-input');
-      const message = input.value.trim();
-      
-      if (!message || !sessionId) return;
-
-      try {
-        addMessage(message, 'user');
-        input.value = '';
-        
-        const response = await fetch(`${LAMBDA_URL}/chat`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            sessionId: sessionId,
-            message: message
-          })
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Chat error: ${errorText}`);
-        }
-
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        addMessage(data.reply, 'assistant');
-      } catch (error) {
-        addMessage("Sorry, there was an error processing your message.", 'assistant');
-        console.error('Chat Error:', error);
-      }
-    }
-</script></body>
+</body>
 </html>
+
