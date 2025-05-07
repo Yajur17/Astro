@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background:
+    linear-gradient(135deg, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.4)),
+    url('https://images.pexels.com/photos/5863561/pexels-photo-5863561.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940') no-repeat center center fixed;
+  background-blend-mode: overlay;
+  background-size: cover;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  padding: 15px 30px;
+}
+
+.container {
+  position: relative;
+  flex: 0 0 350px;
+  background: linear-gradient(135deg, #c9a7ffcc, #ede7ffcc);
+  padding: 24px 28px 28px 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  color: #333;
+  margin-left: auto;
+  overflow: hidden;
+}
+
+/* Styling for the form */
+form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  margin-top: 10px;
+  color: #4a4a4a;
+}
+input, select {
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  outline-color: #6c63ff;
+  transition: border-color 0.3s ease;
+  background: #fff;
+  border: 1.7px solid #a9a9a9;
+  border-radius: 8px;
+}
+input::placeholder {
+  font-style: italic;
+  color: #999;
+}
+input:focus, select:focus {
+  border-color: #6c63ff;
+  background: #f9f8ff;
+}
+input[type="text"],
+input[type="email"] {
+  padding: 8px 10px;
+  width: 100%;
+}
+.time-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.time-input-wrapper span {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c63ff;
+  user-select: none;
+  pointer-events: none;
+}
+.time-input-wrapper input[type="time"] {
+  padding-right: 42px;
+  height: 36px;
+  width: 100%;
+  border: 1.7px solid #a9a9a9;
+  border-radius: 8px;
+}
+
+/* Date input wrapper */
+.date-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+input[type="date"] {
+  padding: 8px 40px 8px 10px;
+  width: 100%;
+  border: 1.7px solid #a9a9a9;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  background: #fff;
+  outline-color: #6c63ff;
+  transition: border-color 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+input[type="date"]:focus {
+  border-color: #6c63ff;
+  background: #f9f8ff;
+}
+/* Hide default browser date picker icons */
+input[type="date"]::-moz-clear,
+input[type="date"]::-moz-inner-spin-button {
+  display: none;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: block;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+/* Custom calendar icon */
+.calendar-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  fill: #6c63ff;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Submit button */
+button {
+  margin-top: 18px;
+  padding: 12px;
+  background: linear-gradient(45deg, #5048e5, #8262f6);
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 93, 193, 0.56);
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: linear-gradient(45deg, #3b36b4, #604dca);
+}
+#birthDateHelp {
+  font-size: 10px;
+  color: #8c8c8c;
+  margin-top: 2px;
+}
+
+/* Chatbox styles */
+.chatbox {
+  display: none;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  padding: 24px 28px;
+  width: 350px;
+  margin-left: auto;
+  height: 500px;
+  max-height: 80vh;
+}
+.chatbox.active {
+  display: flex;
+}
+.chatbox-header {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #5048e5;
+  text-align: center;
+}
+.chat-messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f5f5f5;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.chat-input-area {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.chat-input-area input[type="text"] {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1.7px solid #a9a9a9;
+  outline-color: #6c63ff;
+}
+.chat-input-area button.send-btn {
+  background: linear-gradient(45deg, #5048e5, #8262f6);
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 0 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 93, 193, 0.56);
+  transition: background 0.3s ease;
+}
+.chat-input-area button.send-btn:hover {
+  background: linear-gradient(45deg, #3b36b4, #604dca);
+}
+.chatbox-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.chatbox-buttons button {
+  flex: 1 1 45%;
+  padding: 12px 0;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 93, 193, 0.6);
+  transition: background 0.3s ease;
+}
+.chatbox-buttons button:hover {
+  background: linear-gradient(45deg, #523f99, #5f3a9e);
+}
+
+@media (max-width: 700px) {
+  body {
+    flex-direction: column;
+    padding: 25px 15px;
+  }
+  .container, .chatbox {
+    flex: none;
+    max-width: 100%;
+    margin-left: 0;
+    padding: 20px;
+    order: 2;
+    width: auto;
+    height: auto;
+    max-height: none;
+  }
+  .chatbox-buttons button {
+    flex: 1 1 100%;
+  }
+}
