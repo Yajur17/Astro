@@ -32,11 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
             statusElement.textContent = "Generating your Kundli...";
             statusElement.style.color = 'blue';
 
+            
             const formData = new FormData(this);
             // Remove email from submission temporarily if needed
             formData.delete('email');
             
-            const response = await fetch(`${LAMBDA_URL}/submit`, {
+            const response = await fetch(`${LAMBDA_URL}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
