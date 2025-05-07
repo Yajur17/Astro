@@ -1,10 +1,8 @@
 const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws';
-
 let sessionId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    const birthDateInput = document.getElementById('birthDate');
+    const birthDateInput = document.getElementById('birthdate');
     const calendarIcon = document.querySelector('.calendar-icon');
     const formContainer = document.getElementById('formContainer');
     const chatbox = document.getElementById('chatbox');
@@ -32,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             statusElement.textContent = "Generating your Kundli...";
             statusElement.style.color = 'blue';
 
-            
             const formData = new FormData(this);
             // Remove email from submission temporarily if needed
             formData.delete('email');
@@ -44,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: new URLSearchParams(formData)
             });
+            console.log('Request Body:', body);
 
             if (!response.ok) {
                 const errorText = await response.text();
