@@ -1,7 +1,9 @@
 const LAMBDA_URL = 'https://bfkd6bmkiwaygprwmbqoptxyh40iycad.lambda-url.ap-south-1.on.aws';
+
 let sessionId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const birthDateInput = document.getElementById('birthDate');
     const calendarIcon = document.querySelector('.calendar-icon');
     const formContainer = document.getElementById('formContainer');
